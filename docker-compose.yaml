@@ -1,0 +1,23 @@
+version: '3'
+
+services:
+  metasploitable:
+    image: tleemcjr/metasploitable2
+    container_name: metasploitable
+    command: sh -c "/bin/services.sh && sleep 10000"
+    networks:
+      - scanning_network
+
+  nmap-gpt:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    entrypoint: /bin/bash -c "sleep 20 && python /app/main.py"
+    networks:
+      - scanning_network
+    volumes:
+      - ./:/app/
+
+networks:
+  scanning_network:
+    driver: bridge
