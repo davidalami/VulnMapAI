@@ -25,7 +25,8 @@ OR
 - Build the image ```docker build -t vulnmapai .```
 - Run the image in interactive mode, pass a valid openai API key as an environment variable
 ```docker run -it --entrypoint=/bin/bash -e "OPENAI_API_KEY=sk-.." vulnmapai ```
-- Pass target IP addresses to the python script, like ```python main.py 127.0.0.1``` and make yourself a coffee!
+- Pass target IP addresses to the python script, like ```python main.py 127.0.0.1``` and make yourself a coffee! The results will be saved in the `reports` folder.
+See the example report [here](https://htmlpreview.github.io/?https://github.com/davidalami/VulnMapAI/blob/main/report/vsftpd%202.3.4.html).
 
 ## Contribution
 We welcome contributors who are willing to improve this project. Here's how you can contribute:
