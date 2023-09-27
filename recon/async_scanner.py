@@ -1,19 +1,38 @@
-import nmap
+import json
 import multiprocessing
 import time
+from typing import List, Dict
+
+import nmap
+
 from config import COMMON_PORTS
-import json
 
 
 class NetworkScanner:
-    def __init__(self, target_subnets):
+    """
+    Сlass for performing network scans using nmap.
+    """
+
+    def __init__(self, target_subnets: List[str]):
         self.target_subnets = target_subnets
         self.results_queue = multiprocessing.Queue()
         with open(COMMON_PORTS) as f:
             self.ports = json.load(f)
         self.top_ports = 300
 
-    def extract_port_info(self, scanned_host, protocol_type, port_number, scan_data):
+    def extract_port_info(self, scanned_host: str, protocol_type: str, port_number: int, scan_data: Dict) -> Dict:
+        """
+        Extracts information for a scanned port.
+
+        Args:
+            scanned_host (str): IP address of the scanned host.
+            protocol_type (str): Protocol type, e.g., 'tcp'.
+            port_number (int): Port number being scanned.
+            scan_data (dict): Scan data returned from nmap scan.
+
+        Returns:
+            dict: A dictionary containing port information.
+        """
         protocol_data = scan_data[protocol_type][port_number]
         port_info = {'host': scanned_host, 'protocol': protocol_type, 'port': port_number}
         if protocol_data['state'] != 'open':
@@ -24,10 +43,18 @@ class NetworkScanner:
 
         return port_info
 
-    def scan_range(self, subnet_address, start_port, end_port):
+    def scan_range(self, subnet_address: str, start_port: int, end_port: int):
+        """
+        Scans a range of ports on a subnet.
+
+        Args:
+            subnet_address (str): The address of the subnet to be scanned.
+            start_port (int): The starting port number.
+            end_port (int): The ending port number.
+        """
         port_scanner = nmap.PortScanner()
-        ports_enumeration = ",".join(self.ports[start_port:end_port+1])
-        port_scanner.scan(hosts=subnet_address, arguments='-sV -T4 -sT --script=discovery -p'+ports_enumeration)
+        ports_enumeration = ",".join(self.ports[start_port:end_port + 1])
+        port_scanner.scan(hosts=subnet_address, arguments='-sV -T4 -sT --script=discovery -p' + ports_enumeration)
 
         for scanned_host in port_scanner.all_hosts():
             for protocol_type in port_scanner[scanned_host].all_protocols():
@@ -35,11 +62,24 @@ class NetworkScanner:
                     continue
 
                 for port_number in port_scanner[scanned_host][protocol_type].keys():
-                    port_info = self.extract_port_info(scanned_host, protocol_type, port_number, port_scanner[scanned_host])
+                    port_info = self.extract_port_info(scanned_host, protocol_type, port_number,
+                                                       port_scanner[scanned_host])
                     if port_info:
                         self.results_queue.put(port_info)
 
-    def _create_processes(self, subnet_address, cpu_count, port_range, last_port):
+    def _create_processes(self, subnet_address: str, cpu_count: int, port_range: int, last_port: int) -> List:
+        """
+        Creates and starts a list of processes to scan a subnet.
+
+        Args:
+            subnet_address (str): The address of the subnet to be scanned.
+            cpu_count (int): Number of CPU cores available.
+            port_range (int): Range of ports to be scanned per process.
+            last_port (int): The last port in the range to be scanned.
+
+        Returns:
+            list: List of created and started multiprocessing.Process objects.
+        """
         processes = []
         for i in range(cpu_count):
             start_port = i * port_range
@@ -49,7 +89,16 @@ class NetworkScanner:
             p.start()
         return processes
 
-    def _yield_results(self, processes):
+    def _yield_results(self, processes: List) -> Dict:
+        """
+        Yields results from the results_queue as they become available.
+
+        Args:
+            processes (list): List of multiprocessing.Process objects.
+
+        Yields:
+            dict: Port information dictionary from the results_queue.
+        """
         while processes:
             while not self.results_queue.empty():
                 yield self.results_queue.get()
@@ -62,7 +111,13 @@ class NetworkScanner:
 
             time.sleep(1)
 
-    def execute_scan(self):
+    def execute_scan(self) -> Dict:
+        """
+        Executes the scanning, evently distributing the ports to be scanned among CPU cores.
+
+        Yields:
+            dict: Port information dictionary from the results_queue.
+        """
         cpu_count = multiprocessing.cpu_count()
         port_range = self.top_ports // cpu_count
 
