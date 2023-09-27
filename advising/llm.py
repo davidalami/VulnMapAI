@@ -1,9 +1,17 @@
-import os
-import httpx
 import asyncio
 import json
+import os
+from typing import Dict
+
+import httpx
+
 
 class Advisor:
+    """
+    Advisor class that prepares the reports by summarizing discoveries and providing attack advice,
+    leveraging GPT-4 models from OpenAI API.
+    """
+
     def __init__(self,
                  discovery_result,
                  title,
@@ -21,7 +29,17 @@ class Advisor:
             'Content-Type': 'application/json',
         }
 
-    def _query_api(self, json_data):
+    def _query_api(self, json_data: Dict) -> str:
+        """
+        Private method to query the OpenAI API with provided JSON data.
+
+        Args:
+            json_data (dict): JSON data to be sent to the API.
+
+        Returns:
+            str: Response from the API.
+        """
+
         async def _send_to_openai_async():
             async with httpx.AsyncClient() as client:
                 response = await client.post(
@@ -37,7 +55,13 @@ class Advisor:
 
         return asyncio.run(_send_to_openai_async())
 
-    def advise_attack(self):
+    def advise_attack(self) -> str:
+        """
+        Formulates a query and sends it to the OpenAI API to receive advice on potential attacks.
+
+        Returns:
+            str: Advice on potential attacks from the API.
+        """
         json_data = {
             'model': 'gpt-4',
             'messages': [
@@ -64,7 +88,13 @@ class Advisor:
         }
         return self._query_api(json_data)
 
-    def summarize_discoveries(self):
+    def summarize_discoveries(self) -> str:
+        """
+        Formulates a  query and sends it to the OpenAI API to summarize the discoveries made during the scan.
+
+        Returns:
+            str: Summarized discoveries from the API.
+        """
         json_data = {
             'model': 'gpt-4',
             'messages': [
@@ -83,7 +113,13 @@ class Advisor:
         }
         return self._query_api(json_data)
 
-    def prepare_report(self):
+    def prepare_report(self) -> str:
+        """
+        Prepares an HTML report based on discoveries, attack advice, and exploits.
+
+        Returns:
+            str: A string representation of the HTML report.
+        """
         discoveries = self.summarize_discoveries()
         advise = self.advise_attack()
         exploits = '<br>'.join(self.exploits)
@@ -112,5 +148,3 @@ class Advisor:
         </html>
         """
         return html_string
-
-
