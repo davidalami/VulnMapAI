@@ -1,5 +1,5 @@
 # Use appropriate base image
-FROM quantumcrack/vulnmapai-base:latest
+FROM quantumcrack/vulnmapai-base:0.1
 
 # Copy scripts into the container
 WORKDIR /app
