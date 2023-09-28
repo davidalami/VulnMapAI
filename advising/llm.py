@@ -2,7 +2,7 @@ import asyncio
 import json
 import os
 from typing import Dict
-
+from utils.logger import Logger
 import httpx
 
 
@@ -28,6 +28,7 @@ class Advisor:
             'Authorization': f'Bearer {self.api_key}',
             'Content-Type': 'application/json',
         }
+        self.logger = Logger(__name__).get_logger()
 
     def _query_api(self, json_data: Dict) -> str:
         """
@@ -62,6 +63,7 @@ class Advisor:
         Returns:
             str: Advice on potential attacks from the API.
         """
+        self.logger.info("Advising attack based on the discovery result.")
         json_data = {
             'model': 'gpt-4',
             'messages': [
@@ -95,6 +97,7 @@ class Advisor:
         Returns:
             str: Summarized discoveries from the API.
         """
+        self.logger.info("Summarizing the discoveries.")
         json_data = {
             'model': 'gpt-4',
             'messages': [
@@ -122,6 +125,8 @@ class Advisor:
         """
         discoveries = self.summarize_discoveries()
         advise = self.advise_attack()
+
+        self.logger.info("Preparing the HTML report.")
         exploits = '<br>'.join(self.exploits)
         formatted_exploits = f"<p>{exploits}</p>"
 
