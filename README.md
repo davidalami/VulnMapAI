@@ -27,6 +27,20 @@ OR
 ```docker run -it --entrypoint=/bin/bash -e "OPENAI_API_KEY=sk-.." vulnmapai ```
 - Pass target IP addresses to the python script, like ```python main.py 127.0.0.1``` and make yourself a coffee! The results will be saved in the `reports` folder.
 See the example report [here](https://htmlpreview.github.io/?https://github.com/davidalami/VulnMapAI/blob/main/report/vsftpd%202.3.4.html).
+#### To run the image against TryHackMe machines:
+- Run the image
+```commandline
+docker run -it \
+    -e  OPENAI_API_KEY="sk-.." \
+     -v $(pwd):/app \
+    --sysctl net.ipv6.conf.all.disable_ipv6=0 \
+    --cap-add NET_ADMIN \
+    --cap-add SYS_MODULE \
+    --device /dev/net/tun:/dev/net/tun \
+    --entrypoint=/bin/bash vulnmapai
+```
+- Run `tmux`, then `openvpn lab_your_username.ovpn`, then `Ctrl+b` and `d`, you should be back to the main terminal
+- Run ```python main.py TRYHACKME_MACHINE_IP```. Happy hacking!
 
 ## Contribution
 We welcome contributors who are willing to improve this project. Here's how you can contribute:
