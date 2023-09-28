@@ -41,13 +41,3 @@ RUN ln -sf /usr/local/bin/python3.8 /usr/bin/python
 # Upgrade pip
 RUN python -m ensurepip --default-pip \
     && python -m pip install --upgrade pip
-
-# Copy scripts into the container
-WORKDIR /app
-COPY . /app/
-
-# Install Python libraries
-RUN python -m pip install -r requirements.txt
-
-# Set the script as the entrypoint
-ENTRYPOINT ["python", "/app/main.py"]
