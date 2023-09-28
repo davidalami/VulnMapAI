@@ -2,7 +2,7 @@ import json
 import multiprocessing
 import time
 from typing import List, Dict
-
+from utils.logger import Logger
 import nmap
 
 from config import COMMON_PORTS
@@ -19,6 +19,7 @@ class NetworkScanner:
         with open(COMMON_PORTS) as f:
             self.ports = json.load(f)
         self.top_ports = 300
+        self.logger = Logger(__name__).get_logger()
 
     def extract_port_info(self, scanned_host: str, protocol_type: str, port_number: int, scan_data: Dict) -> Dict:
         """
@@ -33,6 +34,7 @@ class NetworkScanner:
         Returns:
             dict: A dictionary containing port information.
         """
+        self.logger.info(f"Extracting port info for {scanned_host}, {protocol_type}, {port_number}")
         protocol_data = scan_data[protocol_type][port_number]
         port_info = {'host': scanned_host, 'protocol': protocol_type, 'port': port_number}
         if protocol_data['state'] != 'open':
@@ -52,6 +54,7 @@ class NetworkScanner:
             start_port (int): The starting port number.
             end_port (int): The ending port number.
         """
+        self.logger.info(f"Scanning range {start_port}-{end_port} on subnet {subnet_address}")
         port_scanner = nmap.PortScanner()
         ports_enumeration = ",".join(self.ports[start_port:end_port + 1])
         port_scanner.scan(hosts=subnet_address, arguments='-sV -T4 -sT --script=discovery -p' + ports_enumeration)
@@ -121,7 +124,7 @@ class NetworkScanner:
         cpu_count = multiprocessing.cpu_count()
         port_range = self.top_ports // cpu_count
 
-        print(f"Starting the scanning process with {cpu_count} processes...")
+        self.logger.info(f"Starting the scanning process with {cpu_count} processes...")
 
         for subnet_address in self.target_subnets:
             processes = self._create_processes(subnet_address, cpu_count, port_range, self.top_ports)
