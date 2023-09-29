@@ -21,15 +21,9 @@ OR
 - Docker
 
 ### Usage
-- Clone the project and change directory ```git clone https://github.com/davidalami/VulnMapAI.git && cd ./VulnMapAI```
-- Build the image ```DOCKER_BUILDKIT=1 docker build -f build/final_image/Dockerfile -t vulnmapai .```
-- Run the image in interactive mode, pass a valid openai API key as an environment variable
-```docker run -it --entrypoint=/bin/bash -e "OPENAI_API_KEY=sk-.." vulnmapai ```
-- Pass target IP addresses to the python script, like ```python main.py 127.0.0.1``` and make yourself a coffee! The results will be saved in the `reports` folder.
-See the example report [here](https://htmlpreview.github.io/?https://github.com/davidalami/VulnMapAI/blob/main/report/vsftpd%202.3.4.html).
-#### To run the image against HackTheBox machines:
-- Run the image
-```commandline
+#### For hackers:
+- Run the image (command crafted to use against HackTheBox/TryHackMe machines)
+```
 docker run -it \
     -e  OPENAI_API_KEY="sk-.." \
      -v $(pwd):/app \
@@ -42,6 +36,13 @@ docker run -it \
 - Run `tmux`, then `openvpn lab_your_username.ovpn`, then `Ctrl+b` and `d`, you should be back to the main terminal
 - Run ```python main.py TRYHACKME_MACHINE_IP --top_ports 500```. Happy hacking!
 
+#### For developers:
+- Clone the project and change directory ```git clone https://github.com/davidalami/VulnMapAI.git && cd ./VulnMapAI```
+- Build the image ```DOCKER_BUILDKIT=1 docker build -f build/final_image/Dockerfile -t vulnmapai .```
+- Run the image in interactive mode, pass a valid openai API key as an environment variable
+```docker run -it --entrypoint=/bin/bash -e "OPENAI_API_KEY=sk-.." vulnmapai ```
+- Pass target IP addresses to the python script, like ```python main.py 127.0.0.1 --top_ports 500``` and make yourself a coffee! The results will be saved in the `reports` folder.
+See the example report [here](https://htmlpreview.github.io/?https://github.com/davidalami/VulnMapAI/blob/main/report/vsftpd%202.3.4.html).
 
 ## Support
 If you find any bugs or have feature requests, please open an issue detailing the bug or feature.
