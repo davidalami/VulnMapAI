@@ -42,14 +42,6 @@ docker run -it \
 - Run `tmux`, then `openvpn lab_your_username.ovpn`, then `Ctrl+b` and `d`, you should be back to the main terminal
 - Run ```python main.py TRYHACKME_MACHINE_IP```. Happy hacking!
 
-## Contribution
-We welcome contributors who are willing to improve this project. Here's how you can contribute:
-- Fork the repository
-- Clone your fork (git clone https://github.com/[Your_Username]/VulnMapAI)
-- Create a branch (git checkout -b new_feature)
-- Commit your changes (git commit -am 'Add feature')
-- Push to the branch (git push origin new_feature)
-- Open a Pull Request
 
 ### Areas for Contribution
 
