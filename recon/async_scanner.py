@@ -13,12 +13,12 @@ class NetworkScanner:
     Сlass for performing network scans using nmap.
     """
 
-    def __init__(self, target_subnets: List[str]):
+    def __init__(self, target_subnets: List[str], top_ports=300):
         self.target_subnets = target_subnets
-        self.results_queue = multiprocessing.Queue()
         with open(COMMON_PORTS) as f:
             self.ports = json.load(f)
-        self.top_ports = 300
+        self.top_ports = top_ports
+        self.results_queue = multiprocessing.Queue()
         self.logger = Logger(__name__).get_logger()
 
     def extract_port_info(self, scanned_host: str, protocol_type: str, port_number: int, scan_data: Dict) -> Dict:
@@ -124,7 +124,7 @@ class NetworkScanner:
         cpu_count = multiprocessing.cpu_count()
         port_range = self.top_ports // cpu_count
 
-        self.logger.info(f"Starting the scanning process with {cpu_count} processes...")
+        self.logger.info(f"Starting the scanning process with {cpu_count} processes for {self.top_ports} most common ports")
 
         for subnet_address in self.target_subnets:
             processes = self._create_processes(subnet_address, cpu_count, port_range, self.top_ports)
