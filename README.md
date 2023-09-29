@@ -43,13 +43,6 @@ docker run -it \
 - Run ```python main.py TRYHACKME_MACHINE_IP```. Happy hacking!
 
 
-### Areas for Contribution
-
-- Feature Enhancement: Propose new features and enhancements.
-- Bug Fixes: Help in identifying issues and submitting patches for bug fixes.
-- Code Optimization: Contribute to making the code more efficient and optimized.
-- Documentation Improvement: Work on improving the documentation and adding tutorials or guides.
-
 ## Support
 If you find any bugs or have feature requests, please open an issue detailing the bug or feature.
 
