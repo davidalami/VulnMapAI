@@ -40,7 +40,7 @@ docker run -it \
     --entrypoint=/bin/bash quantumcrack/vulnmapai-final:latest
 ```
 - Run `tmux`, then `openvpn lab_your_username.ovpn`, then `Ctrl+b` and `d`, you should be back to the main terminal
-- Run ```python main.py TRYHACKME_MACHINE_IP```. Happy hacking!
+- Run ```python main.py TRYHACKME_MACHINE_IP --top_ports 500```. Happy hacking!
 
 
 ## Support
