@@ -4,3 +4,4 @@ msgpack-python
 pymetasploit3
 openai
 httpx
+flask
