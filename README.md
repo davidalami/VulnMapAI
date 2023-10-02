@@ -31,7 +31,7 @@ docker run -it \
     --cap-add NET_ADMIN \
     --cap-add SYS_MODULE \
     --device /dev/net/tun:/dev/net/tun \
-    --entrypoint=/bin/bash quantumcrack/vulnmapai-final:latest
+    --entrypoint=/bin/bash -p 1337:1337 quantumcrack/vulnmapai-final:latest
 ```
 - Run `tmux`, then `openvpn lab_your_username.ovpn`, then `Ctrl+b` and `d`, you should be back to the main terminal
 - Run ```python main.py TRYHACKME_MACHINE_IP --top_ports 500```. Happy hacking!
