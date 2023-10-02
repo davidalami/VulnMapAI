@@ -5,15 +5,17 @@ from flask import (
     send_from_directory
 )
 
+from config import REPORT_DIR
+
 
 app = Flask(__name__)
 REPORT_FOLDER = './report'
-app.config['REPORT_FOLDER'] = REPORT_FOLDER
+app.config['REPORT_FOLDER'] = str(REPORT_DIR)
 
 
 @app.route('/')
 def index():
-    files = [f for f in os.listdir(REPORT_FOLDER) if f.endswith('.html')]
+    files = [f for f in os.listdir(app.config['REPORT_FOLDER']) if f.endswith('.html')]
     links = [f"<a href='/report/{f}'>{f}</a>" for f in files]
     return '<br>'.join(links)
 
