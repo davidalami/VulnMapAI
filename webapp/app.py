@@ -10,7 +10,7 @@ from config import REPORT_DIR
 
 app = Flask(__name__)
 
-app.config['REPORT_FOLDER'] = str(REPORT_DIR)
+app.config['REPORT_FOLDER'] = str(REPORT_DIR.absolute())
 
 
 @app.route('/')
@@ -22,6 +22,4 @@ def index():
 
 @app.route('/report/<filename>')
 def serve_report(filename):
-    print(app.config['REPORT_FOLDER'])
-    print(filename)
     return send_from_directory(app.config['REPORT_FOLDER'], filename)
