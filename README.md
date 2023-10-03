@@ -40,9 +40,12 @@ docker run -it \
 - Clone the project and change directory ```git clone https://github.com/davidalami/VulnMapAI.git && cd ./VulnMapAI```
 - Build the image ```DOCKER_BUILDKIT=1 docker build -f build/final_image/Dockerfile -t vulnmapai .```
 - Run the image in interactive mode, pass a valid openai API key as an environment variable
-```docker run -it --entrypoint=/bin/bash -e "OPENAI_API_KEY=sk-.." vulnmapai ```
-- Pass target IP addresses to the python script, like ```python main.py 127.0.0.1 --top_ports 500``` and make yourself a coffee! The results will be saved in the `reports` folder.
-See the example report [here](https://htmlpreview.github.io/?https://github.com/davidalami/VulnMapAI/blob/main/report/vsftpd%202.3.4.html).
+```docker run -it --entrypoint=/bin/bash -e "OPENAI_API_KEY=sk-.."  -p 1337:1337 vulnmapai ```
+- Pass target IP addresses to the python script, like ```python main.py 127.0.0.1 --top_ports 500``` and make yourself a coffee!
+
+#### Accessing the report
+Once the scanning process completes, the web application powered by Flask becomes accessible. 
+You can view the generated report by opening your web browser and navigating to http://localhost:1337/.
 
 ## Support
 If you find any bugs or have feature requests, please open an issue detailing the bug or feature.
