@@ -16,6 +16,15 @@ app.config['REPORT_FOLDER'] = str(REPORT_DIR.absolute())
 
 @app.route('/')
 def index():
+    """
+    Serve the main index page which displays a list of all HTML reports.
+
+    The function scans the report folder as specified in the app's configuration
+    for all HTML files and then renders them in the `index.html` template.
+
+    Returns:
+        str: Rendered HTML template with the list of HTML report files.
+    """
     files = [f for f in os.listdir(app.config['REPORT_FOLDER']) if f.endswith('.html')]
     return render_template("index.html", files=files)
 
