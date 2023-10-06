@@ -30,11 +30,11 @@ def index():
 
 
 @app.route('/report/<filename>')
-"""
-Serves a specific report file from the configured report directory.
-
-Returns:
-    The requested report file.
-"""
 def serve_report(filename):
+    """
+    Serves a specific report file from the configured report directory.
+
+    Returns:
+        The requested report file.
+    """
     return send_from_directory(app.config['REPORT_FOLDER'], filename)
