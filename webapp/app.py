@@ -23,12 +23,18 @@ def index():
     for all HTML files and then renders them in the `index.html` template.
 
     Returns:
-        str: Rendered HTML template with the list of HTML report files.
+        Rendered HTML template with the list of HTML report files.
     """
     files = [f for f in os.listdir(app.config['REPORT_FOLDER']) if f.endswith('.html')]
     return render_template("index.html", files=files)
 
 
 @app.route('/report/<filename>')
+"""
+Serves a specific report file from the configured report directory.
+
+Returns:
+    The requested report file.
+"""
 def serve_report(filename):
     return send_from_directory(app.config['REPORT_FOLDER'], filename)
