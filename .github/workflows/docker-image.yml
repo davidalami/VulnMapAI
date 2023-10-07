@@ -22,4 +22,8 @@ jobs:
     - name: Build the Docker image
       run: |
         export DOCKER_BUILDKIT=1
-        docker build -f build/final_image/Dockerfile -t vulnmapai:$(date +%s) .
+        docker build -f build/final_image/Dockerfile -t vulnmapai:latest .
+
+    - name: Run Tests
+      run: |
+        docker run --rm --entrypoint=pytest vulnmapai:latest -svv
