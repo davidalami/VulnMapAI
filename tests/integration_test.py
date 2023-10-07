@@ -16,6 +16,20 @@ def is_port_open(host, port, timeout=1):
 
 
 def test_server_start():
+    """
+    Test the startup of the server by running a Python script in the background.
+
+    The test performs the following steps:
+    1. Initiates the server by running 'main.py' script with '127.0.0.1' as an argument.
+    2. Waits for an initial duration to account for any startup delay.
+    3. Checks for 60 seconds to see if the server starts and becomes accessible on '127.0.0.1:1337'.
+    4. If the server starts within the duration, the test is considered successful.
+    5. If the server doesn't start within 60 seconds, or if the Python script encounters an issue,
+       the test is marked as failed.
+
+    Returns:
+        None. If the server doesn't start as expected, an assertion error is raised.
+    """
     # Run the python script in the background
     process = subprocess.Popen(["python", "main.py", "127.0.0.1"])
 
