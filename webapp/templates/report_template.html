@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+</head>
+
+<body>
+    <div class="container">
+        <h1 class="center-align">{{ title }}</h1>
+        <div class="section">
+            <h2 class="header">Discovery summary:</h2>
+            <div class="divider"></div>
+            <div class="section">
+                <p>{{ exploits|join("<br>") }}</p>
+                <p>{{ discoveries }}</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2 class="header">Attack Advice:</h2>
+            <div class="divider"></div>
+            <p>{{ advise }}</p>
+        </div>
+
+        <div class="section">
+            <h2 class="header">Full Discovery Result:</h2>
+            <div class="divider"></div>
+            <p>
+                {% for k, v in full_discovery_result.items() %}
+                {{ k }}: {{ v }}<br>
+                {% endfor %}
+            </p>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+</body>
+
+</html>
