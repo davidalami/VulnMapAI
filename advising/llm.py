@@ -2,10 +2,12 @@ import asyncio
 import json
 import os
 from typing import Dict
-from utils.logger import Logger
+
 import httpx
 from flask import render_template_string
+
 from config import REPORT_TEMPLATE
+from utils.logger import Logger
 
 
 class Advisor:
