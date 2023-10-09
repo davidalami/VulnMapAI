@@ -4,6 +4,8 @@ import os
 from typing import Dict
 from utils.logger import Logger
 import httpx
+from flask import render_template_string
+from config import REPORT_TEMPLATE
 
 
 class Advisor:
@@ -128,7 +130,6 @@ class Advisor:
 
         self.logger.info("Preparing the HTML report.")
         exploits = '<br>'.join(self.exploits)
-        formatted_exploits = f"<p>{exploits}</p>"
 
         self.full_discovery_result = json.loads(self.full_discovery_result)
         if "script" in self.full_discovery_result:
@@ -137,19 +138,17 @@ class Advisor:
             del self.full_discovery_result["script"]
 
         formatted_full_discovery_result = "".join([f"{k}: {v}<br>" for k, v in self.full_discovery_result.items()])
-        html_string = f"""
-        <html>
-            <head><title>{self.title}</title></head>
-            <body>
-                <h1>{self.title}</h1>
-                <h2>Discovery summary:</h2>
-                {formatted_exploits}
-                <p>{discoveries}</p>
-                <h2>Attack Advice:</h2>
-                <p>{advise}</p>
-                <h2>Full Discovery Result:</h2>
-                <p>{formatted_full_discovery_result}</p>
-            </body>
-        </html>
-        """
-        return html_string
+
+        # Load the template from file
+        with open(REPORT_TEMPLATE, 'r') as template_file:
+            template_content = template_file.read()
+
+        # Render the template to a string
+        report_html = render_template_string(template_content,
+                                         title=self.title,
+                                         exploits=exploits,
+                                         discoveries=discoveries,
+                                         advise=advise,
+                                         full_discovery_result=formatted_full_discovery_result)
+
+        return report_html
