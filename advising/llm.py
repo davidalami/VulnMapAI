@@ -147,10 +147,10 @@ class Advisor:
 
         # Render the template to a string
         report_html = render_template_string(template_content,
-                                         title=self.title,
-                                         exploits=exploits,
-                                         discoveries=discoveries,
-                                         advise=advise,
-                                         full_discovery_result=formatted_full_discovery_result)
+                                             title=self.title,
+                                             exploits=exploits,
+                                             discoveries=discoveries,
+                                             advise=advise,
+                                             full_discovery_result=formatted_full_discovery_result)
 
         return report_html
