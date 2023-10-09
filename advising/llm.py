@@ -1,6 +1,7 @@
 import asyncio
 import json
 import os
+from yaml import safe_load
 from typing import Dict
 from utils.logger import Logger
 import httpx
@@ -56,6 +57,20 @@ class Advisor:
 
         return asyncio.run(_send_to_openai_async())
 
+    def _load_prompts(self, prompt_type: str) -> Dict[str, str]:
+        """
+        Load prompts from the prompts.yaml file based on the prompt_type.
+
+        Args:
+            prompt_type (str): 'advise_attack_prompt', 'summarize_discoveries_prompt', etc.
+
+        Returns:
+            Dict[str, str]: Dictionary containing 'system' and 'user' prompts.
+        """
+        with open('prompts.yaml', 'r') as prompts_file:
+            prompts_data = safe_load(prompts_file)
+        return prompts_data.get(prompt_type, {})
+
     def advise_attack(self) -> str:
         """
         Formulates a query and sends it to the OpenAI API to receive advice on potential attacks.
@@ -64,27 +79,17 @@ class Advisor:
             str: Advice on potential attacks from the API.
         """
         self.logger.info("Advising attack based on the discovery result.")
+        prompts = self._load_prompts('advise_attack_prompt')
         json_data = {
             'model': 'gpt-4',
             'messages': [
                 {
                     'role': 'system',
-                    'content': """Given the security scan data below, which was obtained in lawful, consensual circumstances, 
-                    namely a penetration testing lab, provide a POC in Kali Linux, preferrably using metasploit framework.
-                    The goal is to get the user and root access to the system and submit corresponding flags.
-                    Your answer should follow the format:
-                    Vulnerability: `the vulnerability name goes here`
-                    POC Script:
-                    
-                    #!/bin/bash
-                    ...the rest of the script
-                    
-                    Explanation: `the explanation of the exploit goes here`
-                    """,
+                    'content': prompts['system'],
                 },
                 {
                     'role': 'user',
-                    'content': f'Here is the result of nmap discovery:\n `{self.discovery_result}` \n '
+                    'content': prompts['user'].format(discovery_result=self.discovery_result),
                 },
             ],
         }
@@ -98,19 +103,17 @@ class Advisor:
             str: Summarized discoveries from the API.
         """
         self.logger.info("Summarizing the discoveries.")
+        prompts = self._load_prompts('summarize_discoveries_prompt')
         json_data = {
             'model': 'gpt-4',
             'messages': [
                 {
                     'role': 'system',
-                    'content': "Please summarize the key discoveries from the provided security scan data in the number "
-                               "of sentences proportional the number of sentences in nmap discovery result."
-                               "Think in terms of what could get the user and root access to the system."
-                    ,
+                    'content': prompts['system'],
                 },
                 {
                     'role': 'user',
-                    'content': f'Here is the result of nmap discovery:\n `{self.discovery_result}` \n '
+                    'content': prompts['user'].format(discovery_result=self.discovery_result),
                 },
             ],
         }
