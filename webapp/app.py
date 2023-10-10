@@ -1,4 +1,5 @@
 import os
+import json
 
 from flask import (
     Flask,
@@ -25,7 +26,7 @@ def index():
     Returns:
         Rendered HTML template with the list of HTML report files.
     """
-    files = [f for f in os.listdir(app.config['REPORT_FOLDER']) if f.endswith('.html')]
+    files = [f for f in os.listdir(app.config['REPORT_FOLDER']) if f.endswith('.json')]
     return render_template("index.html", files=files)
 
 
@@ -37,4 +38,5 @@ def serve_report(filename):
     Returns:
         The requested report file.
     """
-    return send_from_directory(app.config['REPORT_FOLDER'], filename)
+    kwargs = json.load(open(os.path.join(app.config['REPORT_FOLDER'], filename)))
+    return render_template("report_template.html", **kwargs)
