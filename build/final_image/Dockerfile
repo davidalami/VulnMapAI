@@ -10,6 +10,7 @@ COPY recon ./recon
 COPY report ./report
 COPY resources ./resources
 COPY utils ./utils
+COPY webapp ./webapp
 COPY config.py .
 COPY main.py .
 COPY requirements.txt .
