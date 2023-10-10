@@ -3,11 +3,9 @@ import json
 import os
 from yaml import safe_load
 from typing import Dict
-
+from config import PROMPTS_FILE
 import httpx
-from flask import render_template_string
 
-from config import REPORT_TEMPLATE
 from utils.logger import Logger
 
 
@@ -71,7 +69,7 @@ class Advisor:
         Returns:
             Dict[str, str]: Dictionary containing 'system' and 'user' prompts.
         """
-        with open('prompts.yaml', 'r') as prompts_file:
+        with open(PROMPTS_FILE, 'r') as prompts_file:
             prompts_data = safe_load(prompts_file)
         return prompts_data.get(prompt_type, {})
 
@@ -123,7 +121,7 @@ class Advisor:
         }
         return self._query_api(json_data)
 
-    def prepare_report(self) -> str:
+    def prepare_report(self) -> Dict:
         """
         Prepares an HTML report based on discoveries, attack advice, and exploits.
 
@@ -144,16 +142,10 @@ class Advisor:
 
         formatted_full_discovery_result = "".join([f"{k}: {v}<br>" for k, v in self.full_discovery_result.items()])
 
-        # Load the template from file
-        with open(REPORT_TEMPLATE, 'r') as template_file:
-            template_content = template_file.read()
-
-        # Render the template to a string
-        report_html = render_template_string(template_content,
-                                             title=self.title,
-                                             exploits=exploits,
-                                             discoveries=discoveries,
-                                             advise=advise,
-                                             full_discovery_result=formatted_full_discovery_result)
-
-        return report_html
+        return {
+            "title": self.title,
+            "exploits": exploits,
+            "discoveries": discoveries,
+            "advise": advise,
+            "full_discovery_result": formatted_full_discovery_result
+        }
