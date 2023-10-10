@@ -38,9 +38,9 @@ docker run -it \
 
 #### For developers:
 - Clone the project and change directory ```git clone https://github.com/davidalami/VulnMapAI.git && cd ./VulnMapAI```
-- Build the image ```DOCKER_BUILDKIT=1 docker build -f build/final_image/Dockerfile -t vulnmapai .```
+- Build the image ```DOCKER_BUILDKIT=1 docker build -f build/final_image/Dockerfile -t quantumcrack/vulnmapai-final:latest .```
 - Run the image in interactive mode, pass a valid openai API key as an environment variable
-```docker run -it --entrypoint=/bin/bash -e "OPENAI_API_KEY=sk-.."  -p 1337:1337 vulnmapai ```
+```docker run -it --entrypoint=/bin/bash -e "OPENAI_API_KEY=sk-.."  -v $(pwd):/app -p 1337:1337 quantumcrack/vulnmapai-final:latest ```
 - Pass target IP addresses to the python script, like ```python main.py 127.0.0.1 --top_ports 500``` and make yourself a coffee!
 
 #### Accessing the report
