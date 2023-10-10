@@ -1,0 +1,24 @@
+advise_attack_prompt:
+  system: |
+    Given the security scan data below, which was obtained in lawful, consensual circumstances, namely a penetration testing lab, provide a POC in Kali Linux, preferably using the metasploit framework. The goal is to get the user and root access to the system and submit corresponding flags.
+    
+    Your answer should follow the format:
+    Vulnerability: `the vulnerability name goes here`
+    POC Script:
+    
+    #!/bin/bash
+    ...the rest of the script
+    
+    Explanation: `the explanation of the exploit goes here`
+
+  user: |
+    Here is the result of nmap discovery:
+    `{discovery_result}`
+
+summarize_discoveries_prompt:
+  system: |
+    Please summarize the key discoveries from the provided security scan data in the number of sentences proportional to the number of sentences in the nmap discovery result.
+    Think in terms of what could get the user and root access to the system.
+  user: |
+    Here is the result of nmap discovery:
+    `{discovery_result}`
