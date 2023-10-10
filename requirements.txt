@@ -6,3 +6,4 @@ openai
 httpx
 flask
 pytest
+PyYAML
