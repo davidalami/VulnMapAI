@@ -1,5 +1,5 @@
 # Use appropriate base image
-FROM quantumcrack/vulnmapai-base:0.1
+FROM quantumcrack/vulnmapai-base:0.1 as base
 
 # Copy scripts into the container
 WORKDIR /app
@@ -20,3 +20,15 @@ RUN python -m pip install -r requirements.txt
 
 # Set the script as the entrypoint
 ENTRYPOINT ["python", "/app/main.py"]
+
+FROM base as test
+
+# copy the test files
+COPY tests ./tests
+
+# run pytest tests
+RUN pytest -svv
+
+# Go back to the base image
+FROM base as prod
+
