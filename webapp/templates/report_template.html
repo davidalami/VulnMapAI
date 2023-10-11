@@ -28,7 +28,9 @@
             <h2 class="header">Full Discovery Result:</h2>
             <div class="divider"></div>
             <p>
-                {{ full_discovery_result }}
+                {% for key, value in full_discovery_result.items() %}
+                    {{ key }}: {{ value }}<br>
+                {% endfor %}
             </p>
         </div>
     </div>

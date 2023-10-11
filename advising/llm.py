@@ -140,12 +140,10 @@ class Advisor:
                 self.full_discovery_result[k] = v
             del self.full_discovery_result["script"]
 
-        formatted_full_discovery_result = "".join([f"{k}: {v}<br>" for k, v in self.full_discovery_result.items()])
-
         return {
             "title": self.title,
             "exploits": exploits,
             "discoveries": discoveries,
             "advise": advise,
-            "full_discovery_result": formatted_full_discovery_result
+            "full_discovery_result": self.full_discovery_result
         }
