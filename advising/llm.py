@@ -21,6 +21,11 @@ class Advisor:
                  exploits,
                  api_key=os.getenv('OPENAI_API_KEY'),
                  api_url='https://api.openai.com/v1/chat/completions'):
+        
+        if not (api_key):
+            self.logger.error("OPENAI_API_KEY NOT SET AS AN ENVIRONMENT VARIABLE")
+            while not (api_key):
+                api_key = input("PLEASE ENTER OPENAI API KEY: ")
         self.full_discovery_result = discovery_result
         self.discovery_result = " ".join(discovery_result.split()[:2000])
         self.title = title
