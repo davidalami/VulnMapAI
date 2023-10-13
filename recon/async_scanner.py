@@ -61,7 +61,7 @@ class NetworkScanner:
         self.logger.info(f"Scanning range {start_port}-{end_port} on subnet {subnet_address}")
         port_scanner = nmap.PortScanner()
         ports_enumeration = ",".join(self.ports[start_port:end_port + 1])
-        port_scanner.scan(hosts=subnet_address, arguments='-sV -T4 -sT --script=discovery -p' + ports_enumeration)
+        port_scanner.scan(hosts=subnet_address, arguments='-sV -T3 -sT --script=discovery -p' + ports_enumeration)
 
         for scanned_host in port_scanner.all_hosts():
             for protocol_type in port_scanner[scanned_host].all_protocols():
