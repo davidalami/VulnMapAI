@@ -7,4 +7,3 @@ httpx
 flask
 pytest
 PyYAML
-python-dotenv
