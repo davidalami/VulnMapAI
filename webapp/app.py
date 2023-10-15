@@ -11,7 +11,6 @@ from flask import (
 
 from config import REPORT_DIR
 
-
 app = Flask(__name__)
 
 app.config['REPORT_FOLDER'] = str(REPORT_DIR.absolute())
@@ -43,6 +42,7 @@ def serve_report(filename):
     kwargs = json.load(open(os.path.join(app.config['REPORT_FOLDER'], filename)))
     return render_template("report_template.html", **kwargs)
 
+
 @app.route('/ask-chatgpt', methods=['POST'])
 def ask_chatgpt():
     """
@@ -68,7 +68,7 @@ def ask_chatgpt():
             engine="text-davinci-003",  # You can choose a different engine if needed
             prompt=user_query,
             max_tokens=50,  # Adjust the max tokens as per your requirements
-            n = 1  # Number of responses to generate
+            n=1  # Number of responses to generate
         )
 
         # Extract the response text from the API response
