@@ -8,6 +8,10 @@ import httpx
 
 from utils.logger import Logger
 
+API_KEY_ERROR = "OPENAI_API_KEY NOT SET AS AN ENVIRONMENT VARIABLE"
+ADVICE_ATTACK = "Advising attack based on the discovery result."
+DISCOVERIES = "Summarizing the discoveries."
+HTML_REPORT = "Preparing the HTML report."
 
 class Advisor:
     """
@@ -23,7 +27,7 @@ class Advisor:
                  api_url='https://api.openai.com/v1/chat/completions'):
         
         if not (api_key):
-            self.logger.error("OPENAI_API_KEY NOT SET AS AN ENVIRONMENT VARIABLE")
+            self.logger.error(API_KEY_ERROR)
             while not (api_key):
                 api_key = input("PLEASE ENTER OPENAI API KEY: ")
         self.full_discovery_result = discovery_result
@@ -85,7 +89,7 @@ class Advisor:
         Returns:
             str: Advice on potential attacks from the API.
         """
-        self.logger.info("Advising attack based on the discovery result.")
+        self.logger.info(ADVICE_ATTACK)
         prompts = self._load_prompts('advise_attack_prompt')
         json_data = {
             'model': 'gpt-4',
@@ -109,7 +113,7 @@ class Advisor:
         Returns:
             str: Summarized discoveries from the API.
         """
-        self.logger.info("Summarizing the discoveries.")
+        self.logger.info(DISCOVERIES)
         prompts = self._load_prompts('summarize_discoveries_prompt')
         json_data = {
             'model': 'gpt-4',
@@ -136,7 +140,7 @@ class Advisor:
         discoveries = self.summarize_discoveries()
         advise = self.advise_attack()
 
-        self.logger.info("Preparing the HTML report.")
+        self.logger.info(HTML_REPORT)
         exploits = '<br>'.join(self.exploits)
 
         self.full_discovery_result = json.loads(self.full_discovery_result)
