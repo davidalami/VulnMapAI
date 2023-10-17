@@ -7,11 +7,7 @@ from config import PROMPTS_FILE
 import httpx
 
 from utils.logger import Logger
-
-API_KEY_ERROR = "OPENAI_API_KEY NOT SET AS AN ENVIRONMENT VARIABLE"
-ADVICE_ATTACK = "Advising attack based on the discovery result."
-DISCOVERIES = "Summarizing the discoveries."
-HTML_REPORT = "Preparing the HTML report."
+from constants import AdvisorConstants
 
 class Advisor:
     """
@@ -27,7 +23,7 @@ class Advisor:
                  api_url='https://api.openai.com/v1/chat/completions'):
         
         if not (api_key):
-            self.logger.error(API_KEY_ERROR)
+            self.logger.error(AdvisorConstants.API_KEY_ERROR)
             while not (api_key):
                 api_key = input("PLEASE ENTER OPENAI API KEY: ")
         self.full_discovery_result = discovery_result
@@ -89,7 +85,7 @@ class Advisor:
         Returns:
             str: Advice on potential attacks from the API.
         """
-        self.logger.info(ADVICE_ATTACK)
+        self.logger.info(AdvisorConstants.ADVICE_ATTACK)
         prompts = self._load_prompts('advise_attack_prompt')
         json_data = {
             'model': 'gpt-4',
@@ -113,7 +109,7 @@ class Advisor:
         Returns:
             str: Summarized discoveries from the API.
         """
-        self.logger.info(DISCOVERIES)
+        self.logger.info(AdvisorConstants.DISCOVERIES)
         prompts = self._load_prompts('summarize_discoveries_prompt')
         json_data = {
             'model': 'gpt-4',
@@ -140,7 +136,7 @@ class Advisor:
         discoveries = self.summarize_discoveries()
         advise = self.advise_attack()
 
-        self.logger.info(HTML_REPORT)
+        self.logger.info(AdvisorConstants.HTML_REPORT)
         exploits = '<br>'.join(self.exploits)
 
         self.full_discovery_result = json.loads(self.full_discovery_result)
