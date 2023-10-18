@@ -12,6 +12,7 @@ COPY resources ./resources
 COPY utils ./utils
 COPY webapp ./webapp
 COPY config.py .
+COPY constants.py .
 COPY main.py .
 COPY requirements.txt .
 
