@@ -1,8 +1,10 @@
 class AdvisorConstants:
-    API_KEY_ERROR = "OPENAI_API_KEY NOT SET AS AN ENVIRONMENT VARIABLE"
+    API_KEY_ERROR = "SELFHOSTED_LLM_KEY NOT SET AS AN ENVIRONMENT VARIABLE"
+    API_URL_ERROR = "SELFHOSTED_LLM_URL NOT SET AS AN ENVIRONMENT VARIABLE"
     ADVICE_ATTACK = "Advising attack based on the discovery result."
     DISCOVERIES = "Summarizing the discoveries."
     HTML_REPORT = "Preparing the HTML report."
+    LLM_REQUEST_FAILED = "LLM request failed; this section is unavailable (see logs)."
 
 class ExploitManagerConstants:
     START_MSF = "Starting MSF..."

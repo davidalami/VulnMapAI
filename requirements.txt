@@ -2,8 +2,8 @@ python-nmap
 requests
 msgpack-python
 pymetasploit3
-openai
 httpx
 flask
 pytest
 PyYAML
+python-dotenv
