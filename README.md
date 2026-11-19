@@ -43,6 +43,19 @@ docker run -it \
 ```docker run -it --entrypoint=/bin/bash -e "OPENAI_API_KEY=sk-.."  -v $(pwd):/app -p 1337:1337 quantumcrack/vulnmapai-final:latest ```
 - Pass target IP addresses to the python script, like ```python main.py 127.0.0.1 --top_ports 500``` and make yourself a coffee!
 
+#### Active exploitation (opt-in)
+Two passes, so you never guess module paths:
+
+1. **Discover (default):** no `--authorize-module` — scans and ranks candidates into the report at http://localhost:1337/, but launches nothing.
+   ```
+   python main.py TRYHACKME_MACHINE_IP --top_ports 500
+   ```
+2. **Authorize:** copy a candidate's path (shown as `module/path [version-confirmed]`) and re-run to execute it (repeatable):
+   ```
+   python main.py TRYHACKME_MACHINE_IP --top_ports 500 --authorize-module unix/ftp/proftpd_modcopy_exec
+   ```
+Only version-confirmed, allowlisted modules are executed.
+
 #### Accessing the report
 Once the scanning process completes, the web application powered by Flask becomes accessible. 
 You can view the generated report by opening your web browser and navigating to http://localhost:1337/.
