@@ -1,5 +1,5 @@
 # VulnMapAI
-VulnMapAI combines the power of nmap’s detailed network scanning and the advanced natural language processing capabilities of GPT-4 to generate comprehensive and intelligible vulnerability reports. It aims to facilitate the identification and understanding of security vulnerabilities.
+VulnMapAI combines the power of nmap’s detailed network scanning with the natural language processing capabilities of a self-hosted (or any OpenAI-compatible) large language model to generate comprehensive and intelligible vulnerability reports. It aims to facilitate the identification and understanding of security vulnerabilities.
 
 ## Features
 - **Automated Network Scanning:** Uses Nmap for automated discovery and scanning of systems.
@@ -20,12 +20,23 @@ OR
 
 - Docker
 
+### LLM configuration
+VulnMapAI talks to an **OpenAI-compatible Chat Completions endpoint**, so you can point it at any self-hosted model server (vLLM, Ollama, LocalAI, LM Studio, …) or at OpenAI itself.
+
+Copy `.env.example` to `.env` and fill in your endpoint:
+```
+SELFHOSTED_LLM_URL=http://localhost:8000/v1/chat/completions
+SELFHOSTED_LLM_KEY=your-api-key
+SELFHOSTED_LLM_MODEL=deepseek-ai/DeepSeek-V4-Flash-0731   # optional, this is the default
+```
+The `.env` is loaded automatically at startup. If `SELFHOSTED_LLM_URL` or `SELFHOSTED_LLM_KEY` is missing, you will be prompted for it.
+
 ### Usage
 #### For hackers:
 - Run the image (command crafted to use against HackTheBox/TryHackMe machines)
 ```
 docker run -it \
-    -e  OPENAI_API_KEY="sk-.." \
+    --env-file .env \
      -v $(pwd):/app \
     --sysctl net.ipv6.conf.all.disable_ipv6=0 \
     --cap-add NET_ADMIN \
@@ -39,8 +50,8 @@ docker run -it \
 #### For developers:
 - Clone the project and change directory ```git clone https://github.com/davidalami/VulnMapAI.git && cd ./VulnMapAI```
 - Build the image ```DOCKER_BUILDKIT=1 docker build -f build/final_image/Dockerfile -t quantumcrack/vulnmapai-final:latest .```
-- Run the image in interactive mode, pass a valid openai API key as an environment variable
-```docker run -it --entrypoint=/bin/bash -e "OPENAI_API_KEY=sk-.."  -v $(pwd):/app -p 1337:1337 quantumcrack/vulnmapai-final:latest ```
+- Run the image in interactive mode, passing your LLM settings via the `.env` file (see [LLM configuration](#llm-configuration))
+```docker run -it --entrypoint=/bin/bash --env-file .env  -v $(pwd):/app -p 1337:1337 quantumcrack/vulnmapai-final:latest ```
 - Pass target IP addresses to the python script, like ```python main.py 127.0.0.1 --top_ports 500``` and make yourself a coffee!
 
 #### Active exploitation (opt-in)

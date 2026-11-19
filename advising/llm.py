@@ -3,7 +3,7 @@ import json
 import os
 from yaml import safe_load
 from typing import Dict
-from config import PROMPTS_FILE
+from config import PROMPTS_FILE, DEFAULT_LLM_MODEL
 import httpx
 
 from utils.logger import Logger
@@ -12,31 +12,41 @@ from constants import AdvisorConstants
 class Advisor:
     """
     Advisor class that prepares the reports by summarizing discoveries and providing attack advice,
-    leveraging GPT-4 models from OpenAI API.
+    leveraging any OpenAI-compatible Chat Completions endpoint (a self-hosted LLM or OpenAI itself).
     """
 
     def __init__(self,
                  discovery_result,
                  title,
                  exploits,
-                 api_key=os.getenv('OPENAI_API_KEY'),
-                 api_url='https://api.openai.com/v1/chat/completions'):
-        
-        if not (api_key):
+                 api_key=None,
+                 api_url=None,
+                 model=None):
+        self.logger = Logger(__name__).get_logger()
+
+        api_url = api_url or os.getenv('SELFHOSTED_LLM_URL')
+        if not api_url:
+            self.logger.error(AdvisorConstants.API_URL_ERROR)
+            while not api_url:
+                api_url = input("PLEASE ENTER THE LLM CHAT COMPLETIONS URL: ")
+
+        api_key = api_key or os.getenv('SELFHOSTED_LLM_KEY')
+        if not api_key:
             self.logger.error(AdvisorConstants.API_KEY_ERROR)
-            while not (api_key):
-                api_key = input("PLEASE ENTER OPENAI API KEY: ")
+            while not api_key:
+                api_key = input("PLEASE ENTER THE LLM API KEY: ")
+
         self.full_discovery_result = discovery_result
         self.discovery_result = " ".join(discovery_result.split()[:2000])
         self.title = title
         self.exploits = exploits
         self.api_key = api_key
         self.api_url = api_url
+        self.model = model or os.getenv('SELFHOSTED_LLM_MODEL', DEFAULT_LLM_MODEL)
         self.headers = {
             'Authorization': f'Bearer {self.api_key}',
             'Content-Type': 'application/json',
         }
-        self.logger = Logger(__name__).get_logger()
 
     def _query_api(self, json_data: Dict) -> str:
         """
@@ -88,7 +98,7 @@ class Advisor:
         self.logger.info(AdvisorConstants.ADVICE_ATTACK)
         prompts = self._load_prompts('advise_attack_prompt')
         json_data = {
-            'model': 'gpt-4',
+            'model': self.model,
             'messages': [
                 {
                     'role': 'system',
@@ -112,7 +122,7 @@ class Advisor:
         self.logger.info(AdvisorConstants.DISCOVERIES)
         prompts = self._load_prompts('summarize_discoveries_prompt')
         json_data = {
-            'model': 'gpt-4',
+            'model': self.model,
             'messages': [
                 {
                     'role': 'system',

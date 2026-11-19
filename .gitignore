@@ -1,0 +1,5 @@
+.env
+*.ovpn
+.idea/
+__pycache__/
+*.log
