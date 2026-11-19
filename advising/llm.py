@@ -43,6 +43,7 @@ class Advisor:
         self.api_key = api_key
         self.api_url = api_url
         self.model = model or os.getenv('SELFHOSTED_LLM_MODEL', DEFAULT_LLM_MODEL)
+        self.request_timeout = 180  # seconds; long POC generations need headroom before degrading
         self.headers = {
             'Authorization': f'Bearer {self.api_key}',
             'Content-Type': 'application/json',
@@ -50,29 +51,34 @@ class Advisor:
 
     def _query_api(self, json_data: Dict) -> str:
         """
-        Private method to query the OpenAI API with provided JSON data.
+        Queries the LLM Chat Completions endpoint, returning a placeholder instead of raising on failure.
+
+        A single slow or failing request must not abort a whole scan, so network, timeout and HTTP errors
+        are logged and degraded into AdvisorConstants.LLM_REQUEST_FAILED for that one report section.
 
         Args:
             json_data (dict): JSON data to be sent to the API.
 
         Returns:
-            str: Response from the API.
+            str: The model's reply, or a placeholder message when the request fails.
         """
 
-        async def _send_to_openai_async():
+        async def _request_completion():
             async with httpx.AsyncClient() as client:
                 response = await client.post(
                     url=self.api_url,
                     json=json_data,
                     headers=self.headers,
-                    timeout=120,
+                    timeout=self.request_timeout,
                 )
-                if response.status_code == 200:
-                    return response.json()["choices"][0]["message"]['content']
-                else:
-                    response.raise_for_status()
+                response.raise_for_status()
+                return response.json()["choices"][0]["message"]['content']
 
-        return asyncio.run(_send_to_openai_async())
+        try:
+            return asyncio.run(_request_completion())
+        except httpx.HTTPError as error:
+            self.logger.error(f"LLM request failed: {error!r}")
+            return AdvisorConstants.LLM_REQUEST_FAILED
 
     def _load_prompts(self, prompt_type: str) -> Dict[str, str]:
         """
