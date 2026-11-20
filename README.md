@@ -25,11 +25,11 @@ VulnMapAI talks to an **OpenAI-compatible Chat Completions endpoint**, so you ca
 
 Copy `.env.example` to `.env` and fill in your endpoint:
 ```
-SELFHOSTED_LLM_URL=http://localhost:8000/v1/chat/completions
-SELFHOSTED_LLM_KEY=your-api-key
-SELFHOSTED_LLM_MODEL=deepseek-ai/DeepSeek-V4-Flash-0731   # optional, this is the default
+LLM_URL=http://localhost:8000/v1/chat/completions
+LLM_KEY=your-api-key
+LLM_MODEL=deepseek-ai/DeepSeek-V4-Flash-0731   # optional, this is the default
 ```
-The `.env` is loaded automatically at startup. If `SELFHOSTED_LLM_URL` or `SELFHOSTED_LLM_KEY` is missing, you will be prompted for it.
+The `.env` is loaded automatically at startup. If `LLM_URL` or `LLM_KEY` is missing, you will be prompted for it.
 
 ### Usage
 #### For hackers:
