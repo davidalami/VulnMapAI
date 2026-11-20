@@ -24,13 +24,13 @@ class Advisor:
                  model=None):
         self.logger = Logger(__name__).get_logger()
 
-        api_url = api_url or os.getenv('SELFHOSTED_LLM_URL')
+        api_url = api_url or os.getenv('LLM_URL')
         if not api_url:
             self.logger.error(AdvisorConstants.API_URL_ERROR)
             while not api_url:
                 api_url = input("PLEASE ENTER THE LLM CHAT COMPLETIONS URL: ")
 
-        api_key = api_key or os.getenv('SELFHOSTED_LLM_KEY')
+        api_key = api_key or os.getenv('LLM_KEY')
         if not api_key:
             self.logger.error(AdvisorConstants.API_KEY_ERROR)
             while not api_key:
@@ -42,7 +42,7 @@ class Advisor:
         self.exploits = exploits
         self.api_key = api_key
         self.api_url = api_url
-        self.model = model or os.getenv('SELFHOSTED_LLM_MODEL', DEFAULT_LLM_MODEL)
+        self.model = model or os.getenv('LLM_MODEL', DEFAULT_LLM_MODEL)
         self.request_timeout = 180  # seconds; long POC generations need headroom before degrading
         self.headers = {
             'Authorization': f'Bearer {self.api_key}',
